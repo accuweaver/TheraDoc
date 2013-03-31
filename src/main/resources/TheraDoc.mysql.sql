@@ -19,7 +19,7 @@ CREATE  TABLE IF NOT EXISTS `Patients` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
-CREATE UNIQUE INDEX `index2` ON `Patients` (`MRN` ASC) ;
+CREATE UNIQUE INDEX `UQ_Patients_MRN` ON `Patients` (`MRN` ASC) ;
 
 
 -- -----------------------------------------------------
@@ -41,9 +41,7 @@ CREATE  TABLE IF NOT EXISTS `Encounters` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
-CREATE UNIQUE INDEX `index2` ON `Encounters` (`MRN` ASC, `encounter_id` ASC) ;
-
-CREATE INDEX `fk_Encounters_Patients1_idx` ON `Encounters` (`MRN` ASC) ;
+CREATE INDEX `FK_Encounters_MRN` ON `Encounters` (`MRN` ASC) ;
 
 
 -- -----------------------------------------------------
@@ -67,13 +65,14 @@ DEFAULT CHARACTER SET = utf8;
 -- Table `message_queue`
 -- -----------------------------------------------------
 CREATE  TABLE IF NOT EXISTS `message_queue` (
-  `message_id` DECIMAL(10,0) NOT NULL AUTO_INCREMENT ,
+  `message_id` DECIMAL(10,0) NOT NULL ,
   `message_date_time` DATETIME NULL DEFAULT NULL ,
   `message` TEXT NULL DEFAULT NULL ,
   `message_control_id` TEXT NULL DEFAULT NULL ,
   `process_status` CHAR(1) NULL COMMENT 'Status of processing: pending, in-process, completed, errors' ,
   `process_error` TEXT NULL ,
   `process_time` DATETIME NULL ,
+PRIMARY KEY (`message_id`),
   CONSTRAINT `fk_message_queue_message_errors1`
     FOREIGN KEY (`message_id` )
     REFERENCES `message_errors` (`message_id` )
@@ -84,96 +83,10 @@ DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `projects`
--- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `projects` (
-  `ID` BIGINT(20) NOT NULL AUTO_INCREMENT ,
-  `end_date` DATE NULL DEFAULT NULL ,
-  `NAME` VARCHAR(255) NOT NULL ,
-  `start_date` DATE NOT NULL ,
-  PRIMARY KEY (`ID`) )
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
-
-CREATE UNIQUE INDEX `NAME` ON `projects` (`NAME` ASC) ;
-
-
--- -----------------------------------------------------
--- Table `sprints`
--- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `sprints` (
-  `ID` BIGINT(20) NOT NULL AUTO_INCREMENT ,
-  `daily_meeting_time` TIME NULL DEFAULT NULL ,
-  `end_date` DATE NULL DEFAULT NULL ,
-  `gained_story_points` INT(11) NULL DEFAULT NULL ,
-  `GOALS` VARCHAR(255) NULL DEFAULT NULL ,
-  `iteration_scope` INT(11) NULL DEFAULT NULL ,
-  `NAME` VARCHAR(255) NOT NULL ,
-  `start_date` DATE NOT NULL ,
-  `project_id` BIGINT(20) NULL DEFAULT NULL ,
-  PRIMARY KEY (`ID`) ,
-  CONSTRAINT `FK_sprints_project_id`
-    FOREIGN KEY (`project_id` )
-    REFERENCES `projects` (`ID` ))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
-
-CREATE UNIQUE INDEX `UNQ_sprints_0` ON `sprints` (`NAME` ASC, `project_id` ASC) ;
-
-CREATE INDEX `FK_sprints_project_id` ON `sprints` (`project_id` ASC) ;
-
-
--- -----------------------------------------------------
--- Table `stories`
--- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `stories` (
-  `ID` BIGINT(20) NOT NULL AUTO_INCREMENT ,
-  `ACCEPTANCE` VARCHAR(255) NULL DEFAULT NULL ,
-  `end_date` DATE NULL DEFAULT NULL ,
-  `ESTIMATION` INT(11) NULL DEFAULT NULL ,
-  `NAME` VARCHAR(255) NOT NULL ,
-  `PRIORITY` INT(11) NULL DEFAULT NULL ,
-  `start_date` DATE NOT NULL ,
-  `sprint_id` BIGINT(20) NULL DEFAULT NULL ,
-  PRIMARY KEY (`ID`) ,
-  CONSTRAINT `FK_stories_sprint_id`
-    FOREIGN KEY (`sprint_id` )
-    REFERENCES `sprints` (`ID` ))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
-
-CREATE UNIQUE INDEX `UNQ_stories_0` ON `stories` (`NAME` ASC, `sprint_id` ASC) ;
-
-CREATE INDEX `FK_stories_sprint_id` ON `stories` (`sprint_id` ASC) ;
-
-
--- -----------------------------------------------------
--- Table `tasks`
--- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `tasks` (
-  `ID` BIGINT(20) NOT NULL AUTO_INCREMENT ,
-  `end_date` DATE NULL DEFAULT NULL ,
-  `NAME` VARCHAR(255) NOT NULL ,
-  `start_date` DATE NULL DEFAULT NULL ,
-  `STATUS` INT(11) NULL DEFAULT NULL ,
-  `story_id` BIGINT(20) NULL DEFAULT NULL ,
-  PRIMARY KEY (`ID`) ,
-  CONSTRAINT `FK_tasks_story_id`
-    FOREIGN KEY (`story_id` )
-    REFERENCES `stories` (`ID` ))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
-
-CREATE UNIQUE INDEX `UNQ_tasks_0` ON `tasks` (`NAME` ASC, `story_id` ASC) ;
-
-CREATE INDEX `FK_tasks_story_id` ON `tasks` (`story_id` ASC) ;
-
-
--- -----------------------------------------------------
 -- Table `message_completed`
 -- -----------------------------------------------------
 CREATE  TABLE IF NOT EXISTS `message_completed` (
-  `message_id` DECIMAL(10,0) NULL ,
+  `message_id` DECIMAL(10,0) NOT NULL ,
   `message_date_time` DATETIME NULL DEFAULT NULL ,
   `message` TEXT NULL DEFAULT NULL ,
   `message_control_id` TEXT NULL DEFAULT NULL ,
@@ -183,6 +96,7 @@ CREATE  TABLE IF NOT EXISTS `message_completed` (
   `message_queue_message_id` DECIMAL(10,0) NOT NULL ,
   `encounter_id` DECIMAL(10,0) NULL ,
   `patient_id` DECIMAL(10,0) NULL ,
+    PRIMARY KEY (`message_id`),
   CONSTRAINT `message_queue_message_id`
     FOREIGN KEY (`message_id` )
     REFERENCES `message_queue` (`message_id` )
@@ -201,43 +115,10 @@ CREATE  TABLE IF NOT EXISTS `message_completed` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
-
--- -----------------------------------------------------
--- Table `message_completed`
--- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `message_completed` (
-  `message_id` DECIMAL(10,0) NULL ,
-  `message_date_time` DATETIME NULL DEFAULT NULL ,
-  `message` TEXT NULL DEFAULT NULL ,
-  `message_control_id` TEXT NULL DEFAULT NULL ,
-  `process_status` CHAR(1) NOT NULL ,
-  `process_error` TEXT NULL ,
-  `process_time` DATETIME NOT NULL ,
-  `message_queue_message_id` DECIMAL(10,0) NOT NULL ,
-  `encounter_id` DECIMAL(10,0) NULL ,
-  `patient_id` DECIMAL(10,0) NULL ,
-  CONSTRAINT `message_queue_message_id`
-    FOREIGN KEY (`message_id` )
-    REFERENCES `message_queue` (`message_id` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `encounter_id`
-    FOREIGN KEY (`encounter_id` )
-    REFERENCES `Encounters` (`encounter_id` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `patient_id`
-    FOREIGN KEY (`patient_id` )
-    REFERENCES `Patients` (`patient_id` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
 
 CREATE INDEX `encounter_id_idx` ON `message_completed` (`encounter_id` ASC) ;
 
 CREATE INDEX `patient_id_idx` ON `message_completed` (`patient_id` ASC) ;
-
 
 
 SET SQL_MODE=@OLD_SQL_MODE;
