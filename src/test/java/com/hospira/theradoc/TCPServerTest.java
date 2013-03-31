@@ -1,12 +1,6 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.hospira.theradoc;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -45,7 +39,8 @@ public class TCPServerTest {
     }
 
     /**
-     *
+     * Setup - we need a server fired up, and a client to use in the tests ..
+     * 
      * @throws IOException
      */
     @Before
@@ -55,7 +50,8 @@ public class TCPServerTest {
     }
 
     /**
-     *
+     * In the tear down, we need to stop the server. 
+     * 
      * @throws IOException
      */
     @After
@@ -65,6 +61,7 @@ public class TCPServerTest {
 
     /**
      * Test of startServer method, of class TCPServer.
+     * 
      * @throws IOException 
      */
     @Test
@@ -78,6 +75,7 @@ public class TCPServerTest {
 
     /**
      * Test of stopServer method, of class TCPServer.
+     * 
      * @throws Exception 
      */
     @Test
@@ -90,6 +88,7 @@ public class TCPServerTest {
     
     /**
      * Test of isListening method, of class TCPServer.
+     * 
      */
     @Test
     public void testIsListening() {

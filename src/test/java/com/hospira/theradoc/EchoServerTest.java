@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.hospira.theradoc;
 
 import java.io.BufferedReader;
@@ -31,13 +27,13 @@ public class EchoServerTest {
     private static final Logger logger = Logger.getLogger(EchoServerTest.class.getName());
 
     /**
-     *
+     * Constructor
      */
     public EchoServerTest() {
     }
 
     /**
-     *
+     * 
      */
     @BeforeClass
     public static void setUpClass() {
@@ -67,6 +63,7 @@ public class EchoServerTest {
 
     /**
      * Test of main method, of class EchoServer.
+     * 
      * @throws Exception 
      */
     @Test
@@ -126,7 +123,7 @@ public class EchoServerTest {
                     line = in.readLine();
 
                     // Print the line ...
-                    logger.info("Got: '" + line + "'");
+                    logger.log(Level.INFO, "Got: ''{0}''", line);
                 } catch (IOException e) {
                     logger.info("Read failed");
                     System.exit(-1);

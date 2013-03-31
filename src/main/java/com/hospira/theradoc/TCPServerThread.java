@@ -53,42 +53,40 @@ public class TCPServerThread extends Thread {
             
             // Get the output stream for sending to the client
             OutputStream out = socket.getOutputStream();
-
-            // Use a buffered reader ...
-            BufferedReader inFromClient = new BufferedReader(new InputStreamReader(in));
             
-            // Set the flag - we keep looping until this is false,or the 
-            // thread terminates ...
-            boolean reading = true;
+            // This try-with-resource makes sure that the Buffered reader gets closed ...
+            try (BufferedReader inFromClient = new BufferedReader(new InputStreamReader(in))) {
+                boolean reading = true;
 
 
-            // The try with resources will automatically close the PrintWriter for us ...
-            try (PrintWriter outToClient = new PrintWriter(out, true)) {
+                // The try with resources will automatically close the PrintWriter for us ...
+                try (PrintWriter outToClient = new PrintWriter(out, true)) {
 
-                while (reading) {
-                    clientSentence = inFromClient.readLine();
-                    logger.log(Level.FINEST, "Received: '{0}'", clientSentence);
-                    capitalizedSentence = clientSentence.toUpperCase();
-                    logger.log(Level.FINEST, "Converted: '{0}'", capitalizedSentence);
-                    outToClient.println(capitalizedSentence);
-                    logger.log(Level.FINEST, "Written to client");
+                    while (reading) {
+                        clientSentence = inFromClient.readLine();
+                        logger.log(Level.FINEST, "Received: '{0}'", clientSentence);
+                        capitalizedSentence = clientSentence.toUpperCase();
+                        logger.log(Level.FINEST, "Converted: '{0}'", capitalizedSentence);
+                        outToClient.println(capitalizedSentence);
+                        logger.log(Level.FINEST, "Written to client");
 
-                    /**
-                     * We look for the word "quit" to shut down the server ...
-                     */
-                    if (clientSentence.contains("quit")) {
-                        outToClient.printf("Closing down server for '%s'", clientSentence);
-                        logger.log(Level.INFO, "Closing down server for ''{0}''", clientSentence);
-                        reading = false;
-                        TCPServer.getInstance().stopServer();
-                        System.exit(0);
+                        /**
+                         * We look for the word "quit" to shut down the server ...
+                         */
+                        if (clientSentence.contains("quit")) {
+                            outToClient.printf("Closing down server for '%s'", clientSentence);
+                            logger.log(Level.INFO, "Closing down server for ''{0}''", clientSentence);
+                            reading = false;
+                            TCPServer.getInstance().stopServer();
+                            System.exit(0);
+                        }
                     }
-                    
-                }
 
+                }
             }
-            // Be a good citizen and close the input stream
-            inFromClient.close();
+            // Make sure the streams are closed ...
+            in.close();
+            out.close();
             
             // close the socket - this should probably be done in the finally
             socket.close();

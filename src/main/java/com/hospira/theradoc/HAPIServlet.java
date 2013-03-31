@@ -18,6 +18,7 @@ import javax.servlet.ServletException;
  * @author robweaver
  */
 public class HAPIServlet extends HohServlet {
+    private static final long serialVersionUID = 3611365325400218087L;
 
         /**
          * Initialise the servlet
@@ -48,6 +49,7 @@ public class HAPIServlet extends HohServlet {
                  * @param theMetadata A map containing additional information about
                  *                    the message, where it came from, etc.  
                  */
+                @Override
                 public Message processMessage(Message theMessage, Map<String, Object> theMetadata) throws ReceivingApplicationException, HL7Exception {
                         System.out.println("Received message:\n" + theMessage.encode());
 
@@ -94,6 +96,7 @@ public class HAPIServlet extends HohServlet {
                 /**
                  * {@inheritDoc}
                  */
+                @Override
                 public boolean canProcess(Message theMessage) {
                         return true;
                 }
