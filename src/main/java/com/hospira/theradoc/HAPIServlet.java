@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.hospira.theradoc;
 
 import ca.uhn.hl7v2.HL7Exception;
@@ -25,6 +21,8 @@ public class HAPIServlet extends HohServlet {
 
         /**
          * Initialise the servlet
+         * @param theConfig
+         * @throws ServletException  
          */
         @Override
         public void init(ServletConfig theConfig) throws ServletException {

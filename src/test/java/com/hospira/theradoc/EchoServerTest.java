@@ -30,27 +30,44 @@ public class EchoServerTest {
      */
     private static final Logger logger = Logger.getLogger(EchoServerTest.class.getName());
 
+    /**
+     *
+     */
     public EchoServerTest() {
     }
 
+    /**
+     *
+     */
     @BeforeClass
     public static void setUpClass() {
     }
 
+    /**
+     *
+     */
     @AfterClass
     public static void tearDownClass() {
     }
 
+    /**
+     *
+     * @throws IOException
+     */
     @Before
     public void setUp() throws IOException {
     }
 
+    /**
+     *
+     */
     @After
     public void tearDown() {
     }
 
     /**
      * Test of main method, of class EchoServer.
+     * @throws Exception 
      */
     @Test
     public void testMain() throws Exception {
@@ -63,8 +80,14 @@ public class EchoServerTest {
         fail("The test case is a prototype.");
     }
 
+    /**
+     *
+     */
     public class Client {
 
+        /**
+         *
+         */
         public Client() {
             String line;
             BufferedReader in = null;

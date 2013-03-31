@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.hospira.theradoc;
 
 import java.io.IOException;
@@ -23,6 +19,9 @@ public class TCPServer {
     volatile private boolean listening = true;
     private static TCPServer instance;
     private ServerSocket welcomeSocket;
+    /**
+     *
+     */
     public static int PORT = 1234;
 
     /**
@@ -46,9 +45,14 @@ public class TCPServer {
 
     /**
      * Main method for running the server ...
+     * 
+     * Fires the server off into a separate thread to make it act like a real
+     * server. 
+     * 
+     * Single threaded, and the connection is managed in the main thread.
      *
      * @param argv
-     * @throws Exception
+     * @throws IOException  
      */
     public static void main(String argv[]) throws IOException {
         logger.info("Main Method");
@@ -67,6 +71,11 @@ public class TCPServer {
         
     }
 
+    /**
+     * Public method to start the server ...
+     * 
+     * @throws IOException
+     */
     public void startServer() throws IOException {
         logger.info("startServer");
         Thread.UncaughtExceptionHandler h = new Thread.UncaughtExceptionHandler() {
@@ -80,6 +89,11 @@ public class TCPServer {
 
     }
 
+    /**
+     * Run the actual server - this is not called directly.
+     * 
+     * @throws IOException 
+     */
     private void runServer() throws IOException {
         logger.info("runServer");
         try {
@@ -120,7 +134,7 @@ public class TCPServer {
     /**
      * Set the flag to not running
      *
-     * @param running the running to set
+     * @param listening 
      */
     public void setListening(boolean listening) {
         this.listening = listening;

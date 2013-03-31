@@ -10,6 +10,11 @@ import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * This class handles the server connection after the call to accept.
+ * 
+ * @author robweaver
+ */
 public class TCPServerThread extends Thread {
 
     /**
@@ -18,6 +23,10 @@ public class TCPServerThread extends Thread {
     private static final Logger logger = Logger.getLogger(TCPServerThread.class.getName());
     private Socket socket = null;
 
+    /**
+     *
+     * @param socket
+     */
     public TCPServerThread(Socket socket) {
         super("TCPServerThread");
         this.socket = socket;
@@ -26,6 +35,10 @@ public class TCPServerThread extends Thread {
     @Override
     public void run() {
 
+        /** 
+         * this check makes sure that we don't keep doing work when we 
+         * should be shutting down the server ....
+         */
         if (!TCPServer.getInstance().isListening()) {
             return;
         }
@@ -35,10 +48,17 @@ public class TCPServerThread extends Thread {
 
         try {
 
+            // Get the input stream from the client ...
             InputStream in = socket.getInputStream();
+            
+            // Get the output stream for sending to the client
             OutputStream out = socket.getOutputStream();
 
+            // Use a buffered reader ...
             BufferedReader inFromClient = new BufferedReader(new InputStreamReader(in));
+            
+            // Set the flag - we keep looping until this is false,or the 
+            // thread terminates ...
             boolean reading = true;
 
 
@@ -53,6 +73,9 @@ public class TCPServerThread extends Thread {
                     outToClient.println(capitalizedSentence);
                     logger.log(Level.FINEST, "Written to client");
 
+                    /**
+                     * We look for the word "quit" to shut down the server ...
+                     */
                     if (clientSentence.contains("quit")) {
                         outToClient.printf("Closing down server for '%s'", clientSentence);
                         logger.log(Level.INFO, "Closing down server for ''{0}''", clientSentence);
@@ -60,12 +83,17 @@ public class TCPServerThread extends Thread {
                         TCPServer.getInstance().stopServer();
                         System.exit(0);
                     }
+                    
                 }
 
             }
+            // Be a good citizen and close the input stream
             inFromClient.close();
+            
+            // close the socket - this should probably be done in the finally
             socket.close();
         } catch (IOException ex) {
+            // This is most likely that the connection was terminated by the client
             logger.log(Level.SEVERE, "Caught IO Exception - client disconnect ?", ex);
         }
 

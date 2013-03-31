@@ -21,6 +21,11 @@ public class TCPClient {
 
     private Socket clientSocket;
 
+    /**
+     *
+     * @param sentence
+     * @return
+     */
     public String talkToServer(String sentence) {
         String modifiedSentence = null;
         try {

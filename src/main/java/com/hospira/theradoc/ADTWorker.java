@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.hospira.theradoc;
 import java.io.IOException;
 import java.util.logging.Logger;
@@ -10,6 +6,7 @@ import org.glassfish.grizzly.filterchain.BaseFilter;
 import org.glassfish.grizzly.filterchain.FilterChain;
 import org.glassfish.grizzly.filterchain.FilterChainContext;
 import org.glassfish.grizzly.filterchain.NextAction;
+
 /**
  * Implementation of {@link FilterChain} filter, which replies with the request
  * message.

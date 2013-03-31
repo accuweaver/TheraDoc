@@ -23,23 +23,41 @@ public class TCPServerTest {
     private static TCPServer server = TCPServer.getInstance();
     private static TCPClient client;
 
+    /**
+     *
+     */
     public TCPServerTest() {
     }
 
+    /**
+     *
+     * @throws Exception
+     */
     @BeforeClass
     public static void setUpClass() throws Exception {
     }
 
+    /**
+     *
+     */
     @AfterClass
     public static void tearDownClass() {
     }
 
+    /**
+     *
+     * @throws IOException
+     */
     @Before
     public void setUp() throws IOException {
         TCPServer.main(null);
         client = new TCPClient();
     }
 
+    /**
+     *
+     * @throws IOException
+     */
     @After
     public void tearDown() throws IOException {
         server.stopServer();
@@ -47,6 +65,7 @@ public class TCPServerTest {
 
     /**
      * Test of startServer method, of class TCPServer.
+     * @throws IOException 
      */
     @Test
     public void testTalkToServer() throws IOException {
@@ -59,6 +78,7 @@ public class TCPServerTest {
 
     /**
      * Test of stopServer method, of class TCPServer.
+     * @throws Exception 
      */
     @Test
     public void testStopServer() throws Exception {
